@@ -1,0 +1,41 @@
+{
+  "name": "smartyatra",
+  "version": "1.0.0",
+  "description": "AI-powered smart tourism companion for India",
+  "scripts": {
+    "prepare": "husky install",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "test": "jest"
+  },
+  "keywords": [
+    "travel",
+    "AI",
+    "tourism",
+    "India"
+  ],
+  "author": "SmartYatra Dev Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.0.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.0.0",
+    "husky": "^7.0.0",
+    "jest": "^27.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.0.0",
+    "typescript": "^4.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}
