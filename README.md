@@ -1,4 +1,4 @@
-# SmartYatra
+# TripBot-AI India
 
 AI-powered smart tourism companion for India
 
