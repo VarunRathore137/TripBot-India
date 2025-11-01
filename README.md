@@ -1,4 +1,4 @@
-# SmartYatra
+# TripBot-AI India
 
 AI-powered smart tourism companion for India
 
@@ -71,6 +71,3 @@ smartyatra/
 2. Make your changes
 3. Submit a pull request
 
-## License
-
-MIT
