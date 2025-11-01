@@ -1,21 +1,48 @@
 import { Itinerary } from '../models/itinerary.js';
+import ItineraryService from '../services/itineraryService.js';
+import { validateItineraryInput } from '../validators/itineraryValidator.js';
+import { apiResponse } from '../utils/apiResponse.js';
 
 export const createItinerary = async (req, res, next) => {
   try {
-    const itinerary = new Itinerary({
-      ...req.body,
+    // Validate input
+    const { error, value } = validateItineraryInput(req.body);
+    if (error) {
+      return apiResponse.validationError(res, error.details.map(detail => detail.message));
+    }
+
+    // Generate itinerary using service
+    const generatedItinerary = await ItineraryService.generateItinerary({
+      ...value,
       user: req.user._id
+    });
+
+    // Save to database
+    const itinerary = new Itinerary({
+      ...generatedItinerary,
+      user: req.user._id,
+      status: 'active',
+      createdAt: new Date()
     });
 
     await itinerary.save();
 
-    res.status(201).json({
-      status: 'success',
-      data: {
-        itinerary
-      }
-    });
+    // Send response
+    return apiResponse.success(res, {
+      message: 'Itinerary created successfully',
+      data: { itinerary }
+    }, 201);
+    
   } catch (error) {
+    if (error.message.includes('API key')) {
+      return apiResponse.error(res, 'Service configuration error', 503);
+    }
+    if (error.message.includes('destination')) {
+      return apiResponse.error(res, 'Invalid destination specified', 400);
+    }
+    if (error.message.includes('validation')) {
+      return apiResponse.error(res, 'Invalid itinerary data', 400);
+    }
     next(error);
   }
 };

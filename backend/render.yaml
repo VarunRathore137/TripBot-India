@@ -1,9 +1,11 @@
 services:
+  # Backend API Service
   - type: web
     name: tripbot-backend
     env: node
-    buildCommand: npm install
-    startCommand: npm start
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -17,13 +19,41 @@ services:
         value: 7d
       - key: GOOGLE_MAPS_API_KEY
         sync: false
+      - key: OPENAI_API_KEY
+        sync: false
       - key: RATE_LIMIT_WINDOW_MS
         value: 900000
       - key: RATE_LIMIT_MAX_REQUESTS
         value: 100
-      - key: AUTH0_DOMAIN
+
+  # Python ML Service
+  - type: web
+    name: tripbot-ml
+    env: python
+    plan: free
+    buildCommand: cd API && pip install -r requirements.txt
+    startCommand: cd API && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.12
+      - key: OPENAI_API_KEY
         sync: false
-      - key: AUTH0_CLIENT_ID
+      - key: GOOGLE_MAPS_API_KEY
         sync: false
-      - key: AUTH0_CLIENT_SECRET
+      - key: REDIS_URL
         sync: false
+
+  # Frontend Service
+  - type: web
+    name: tripbot-frontend
+    env: node
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: https://tripbot-backend.onrender.com
+      - key: VITE_ML_API_URL
+        value: https://tripbot-ml.onrender.com
+      - key: NODE_VERSION
+        value: 18.17.0
