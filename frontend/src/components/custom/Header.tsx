@@ -1,112 +1,69 @@
-import React, { useContext } from 'react';
-import { Button } from '../ui/button';
+import { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { LogInContext } from '@/Context/LogInContext/Login';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuShortcut,
 } from '@/components/ui/dropdown-menu';
-import { LogInIcon, LogOutIcon, Plane, Plus, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import ThemeToggle from '../constants/ThemeToggle';
 
-interface HeaderProps {
-  headerRef?: React.RefObject<HTMLDivElement>;
-}
-
-function Header({ headerRef }: HeaderProps) {
-  const { user, isAuthenticated, logout, loginWithPopup, loginWithRedirect } =
-    useContext(LogInContext);
-
-  const LogOut = () => {
-    logout();
-  };
-
-  const LogIn = () => {
-    loginWithPopup();
-  };
+const Header = () => {
+  const { user, isAuthenticated, logout } = useContext(LogInContext);
 
   return (
-    <div
-      ref={headerRef}
-      className="w-full flex items-center justify-between shadow-sm p-3 md:px-40 border-b"
-    >
-      <Link to={'/'}>
-        <div className="logo flex gap-2 items-center justify-between">
-          <div className="img inline-block h-5 w-5 md:h-10 md:w-10">
-            <img src="/logo.png" alt="" />
-          </div>
-          <h1 className="text-lg md:text-3xl font-bold bg-gradient-to-b from-blue-400 to-blue-700 bg-clip-text text-transparent">
-            JourneyJolt
-          </h1>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link to="/" className="mr-6 flex items-center space-x-2">
+            <span className="hidden font-bold sm:inline-block">TripBot</span>
+          </Link>
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            <Link to="/plan-a-trip">Plan a Trip</Link>
+            <Link to="/my-trips">My Trips</Link>
+          </nav>
         </div>
-      </Link>
-      <div className="flex items-center justify-center gap-5">
-        <ThemeToggle className="" />
-        {isAuthenticated ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger className="">
-              <div className="user flex items-center gap-2 mr-3">
-                <h2 className="hidden sm:block text-lg md:text-xl bg-gradient-to-b from-primary/90 to-primary/60 bg-clip-text text-transparent capitalize">
-                  Hi {user.given_name || user.nickname}
-                </h2>
-                <div className="userimg overflow-hidden h-10 w-10 rounded-full">
-                  {user.picture ? (
-                    <img src={user.picture} alt={user.name} />
-                  ) : (
-                    <User />
-                  )}
-                </div>
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="text-center sm:text-left w-56">
-              <DropdownMenuLabel className="font-semibold text-xl flex items-center justify-start gap-2">
-                <User /> My Account
-              </DropdownMenuLabel>
-
-              <DropdownMenuSeparator />
-
-              <Link to="/all-trips" className="">
-                <DropdownMenuItem className="w-full cursor-pointer text-lg flex items-center justify-start gap-2">
-                  <Plane /> My Trips
-                </DropdownMenuItem>
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none">
+            <button className="inline-flex items-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64">
+              <span className="hidden lg:inline-flex">Search documentation...</span>
+              <span className="inline-flex lg:hidden">Search...</span>
+              <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+                <span className="text-xs">⌘</span>K
+              </kbd>
+            </button>
+          </div>
+          <nav className="flex items-center">
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.picture} alt={user?.name} />
+                      <AvatarFallback>
+                        {user?.name?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuItem onClick={() => logout()}>
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost">Login</Button>
               </Link>
-
-              <Link to="/plan-a-trip" className="">
-                <DropdownMenuItem className="w-full cursor-pointer text-lg flex items-center justify-start gap-2">
-                  <Plus /> Create Trip
-                </DropdownMenuItem>
-              </Link>
-
-              <DropdownMenuSeparator />
-
-              <div className="text-lg flex items-center justify-center p-2">
-                <Button
-                  variant="destructive"
-                  className="w-full text-center"
-                  onClick={LogOut}
-                >
-                  Log Out <LogOutIcon className="h-4" />
-                </Button>
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          <Button onClick={LogIn}>
-            Sign In{' '}
-            <DropdownMenuShortcut>
-              {' '}
-              <LogInIcon className="h-4" />
-            </DropdownMenuShortcut>
-          </Button>
-        )}
+            )}
+          </nav>
+        </div>
       </div>
-    </div>
+    </header>
   );
-}
+};
 
 export default Header;

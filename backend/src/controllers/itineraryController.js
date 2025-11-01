@@ -1,33 +1,22 @@
-import Itinerary from '../models/itinerary.js';
-import { successResponse, errorResponse } from '../utils/apiResponse.js';
-import logger from '../utils/logger.js';
+import { Itinerary } from '../models/itinerary.js';
 
-/**
- * Create a new itinerary
- * @route POST /api/itineraries
- */
-export const createItinerary = async (req, res) => {
+export const createItinerary = async (req, res, next) => {
   try {
-    const itineraryData = {
+    const itinerary = new Itinerary({
       ...req.body,
       user: req.user._id
-    };
+    });
 
-    const itinerary = await Itinerary.create(itineraryData);
-    logger.info(`New itinerary created with ID: ${itinerary._id}`);
-    
-    return successResponse(res, {
-      statusCode: 201,
-      message: 'Itinerary created successfully',
-      data: { itinerary }
+    await itinerary.save();
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        itinerary
+      }
     });
   } catch (error) {
-    logger.error('Error creating itinerary:', error);
-    return errorResponse(res, {
-      statusCode: 500,
-      message: 'Error creating itinerary',
-      error: error.message
-    });
+    next(error);
   }
 };
 

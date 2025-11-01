@@ -1,11 +1,14 @@
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import React, { useContext, useEffect, useState } from 'react';
-import Autocomplete from 'react-google-autocomplete';
-import {
-  PROMPT,
-  SelectBudgetOptions,
-  SelectNoOfPersons,
-} from '../../constants/Options';
+import { LogInContext } from '@/Context/LogInContext/Login';
+import { startChat } from '@/Service/AiModel';
+import { db } from '@/Service/Firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { FcGoogle } from 'react-icons/fc';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import toast from 'react-hot-toast';
 import {
   Dialog,
   DialogContent,
@@ -15,21 +18,12 @@ import {
   DialogClose,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { FcGoogle } from 'react-icons/fc';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { Button } from '@/components/ui/button';
-import toast from 'react-hot-toast';
-import { model, startChat } from '@/Service/AiModel';
-
-import { LogInContext } from '@/Context/LogInContext/Login';
-
-import { db } from '@/Service/Firebase';
-import { doc, setDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
-
-interface CreateTripProps {
-  createTripPageRef?: React.RefObject<HTMLDivElement>;
-}
+import {
+  PROMPT,
+  SelectBudgetOptions,
+  SelectNoOfPersons,
+} from '../../constants/Options';
+import Autocomplete from 'react-google-autocomplete';
 
 interface FormData {
   location?: string;
@@ -38,8 +32,12 @@ interface FormData {
   Budget?: string;
 }
 
-function CreateTrip({ createTripPageRef }: CreateTripProps) {
-  const [place, setPlace] = useState('');
+interface PlaceResult {
+  formatted_address?: string;
+  name?: string;
+}
+
+const CreateTrip = () => {
   const [formData, setFormData] = useState<FormData>({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +69,7 @@ function CreateTrip({ createTripPageRef }: CreateTripProps) {
       localStorage.setItem('User', JSON.stringify(user));
       SaveUser();
     }
-  }, [user]);
+  }, [user, isAuthenticated]);
 
   const SaveTrip = async (TripData: any) => {
     const User = JSON.parse(localStorage.getItem('User') || '{}');
@@ -140,7 +138,7 @@ function CreateTrip({ createTripPageRef }: CreateTripProps) {
   };
 
   return (
-    <div ref={createTripPageRef} className="mt-10 text-center">
+    <div className="mt-10 text-center">
       <div className="text">
         <h2 className="text-3xl md:text-5xl font-bold mb-5 flex items-center justify-center">
           <span className="hidden md:block">🚀</span>{' '}
@@ -169,13 +167,12 @@ function CreateTrip({ createTripPageRef }: CreateTripProps) {
           </h2>
 
           <Autocomplete
-            apiKey={import.meta.env.VITE_GOOGLE_MAP_API_KEY}
+            apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-center"
-            onPlaceSelected={(place) => {
-              setPlace(place);
-              console.log(place);
-              console.log('selected:', place.name);
-              handleInputChange('location', place.formatted_address);
+            onPlaceSelected={(selectedPlace: PlaceResult) => {
+              if (selectedPlace.formatted_address) {
+                handleInputChange('location', selectedPlace.formatted_address);
+              }
             }}
           />
         </div>
@@ -282,6 +279,6 @@ function CreateTrip({ createTripPageRef }: CreateTripProps) {
       </Dialog>
     </div>
   );
-}
+};
 
 export default CreateTrip;

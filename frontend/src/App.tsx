@@ -1,52 +1,28 @@
-import React, { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import Layout from './components/custom/Layout';
-import Home from './pages/Home';
 import { Toaster } from 'react-hot-toast';
-import { ThemeProvider } from 'next-themes';
-import { LogInProvider } from './Context/LogInContext/Login';
-import CreateTrip from './components/routes/plan-a-trip/CreateTrip';
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
+import Layout from '@/components/custom/Layout';
+import Hero from '@/components/custom/Hero';
+import CreateTrip from '@/components/routes/plan-a-trip/CreateTrip';
+import MyTrips from '@/components/routes/my-trips/MyTrips';
+import TripDetails from '@/components/routes/my-trips/TripDetails';
+import Login from '@/components/routes/auth/Login';
 
-function App() {
+const App = () => {
   const headerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const createTripPageRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    NProgress.configure({ showSpinner: false });
-  }, []);
 
   return (
-    <LogInProvider>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Routes>
-            <Route
-              path="/"
-              element={<Layout headerRef={headerRef} />}
-            >
-              <Route
-                index
-                element={<Home heroRef={heroRef} />}
-              />
-              <Route
-                path="/plan-a-trip"
-                element={<CreateTrip createTripPageRef={createTripPageRef} />}
-              />
-            </Route>
-          </Routes>
-        </motion.div>
-        <Toaster position="bottom-center" />
-      </ThemeProvider>
-    </LogInProvider>
+    <Layout>
+      <Toaster position="top-center" />
+      <Routes>
+        <Route path="/" element={<Hero />} />
+        <Route path="/plan-a-trip" element={<CreateTrip />} />
+        <Route path="/my-trips" element={<MyTrips />} />
+        <Route path="/my-trips/:id" element={<TripDetails />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Layout>
   );
-}
+};
 
 export default App;

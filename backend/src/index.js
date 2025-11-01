@@ -12,6 +12,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 dotenv.config();
 
 import config from './config/app.js';
+import connectDB from './config/mongodb.config.js';
 
 const app = express();
 
@@ -46,10 +47,12 @@ app.use('/api/itineraries', itineraryRoutes);
 app.use(errorHandler);
 
 // Connect to MongoDB
-import connectDB from './config/database.js';
-connectDB();
-
-// Start server
-app.listen(config.port, () => {
-  console.log(`Server running in ${config.nodeEnv} mode on port ${config.port}`);
+connectDB().then(() => {
+  // Start server only after successful database connection
+  app.listen(config.port, () => {
+    console.log(`Server running in ${config.nodeEnv} mode on port ${config.port}`);
+  });
+}).catch(err => {
+  console.error('Failed to connect to MongoDB:', err);
+  process.exit(1);
 });

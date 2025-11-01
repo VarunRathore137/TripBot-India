@@ -1,16 +1,17 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { ReactNode } from 'react';
 import Header from './Header';
 
-function Layout() {
+interface LayoutProps {
+  children: ReactNode;
+}
+
+const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main>
-        <Outlet />
-      </main>
+      <main>{children}</main>
     </div>
   );
-}
+};
 
 export default Layout;
