@@ -18,4 +18,9 @@ export const API_ENDPOINTS = {
     update: (id: string) => `${API_BASE_URL}/api/itineraries/${id}`,
     delete: (id: string) => `${API_BASE_URL}/api/itineraries/${id}`,
   },
+  slm: {
+    generate: `${API_BASE_URL}/api/slm/generate`,
+    metrics: `${API_BASE_URL}/api/slm/metrics`,
+  },
+  GENERATE_ITINERARY: `${API_BASE_URL}/api/slm/generate-itinerary`,
 };
