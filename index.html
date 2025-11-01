@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TripBot – AI Travel Planner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="TripBot logo" />
+      <h1>TripBot</h1>
+    </div>
+    <nav class="main-nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="plantrip.html">Plan Trip</a>
+      <a href="recommendations.html">Recommendations</a>
+    </nav>
+    <div class="auth-buttons">
+      <a href="signin.html" class="btn small">Sign In</a>
+      <a href="signup.html" class="btn small outline">Sign Up</a>
+    </div>
+  </header>
+
+  <!-- ===== HERO SLIDER ===== -->
+  <section class="hero-slider">
+    <div class="slides fade">
+      <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1920&q=80" alt="Mountains" />
+    </div>
+    <div class="slides fade">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80" alt="Beach" />
+    </div>
+    <div class="slides fade">
+      <img src="https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=1920&q=80" alt="City" />
+    </div>
+    <div class="slides fade">
+      <img src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?auto=format&fit=crop&w=1920&q=80" alt="Desert" />
+    </div>
+  </section>
+
+  <!-- ===== HERO CONTENT ===== -->
+  <section class="hero-content">
+    <h2>Let’s plan your journey with <span>TripBot</span></h2>
+    <p>Your AI-powered travel companion to explore India like never before.</p>
+    <a href="plantrip.html" class="btn">Start Planning ✨</a>
+  </section>
+
+  <!-- ===== ABOUT SECTION ===== -->
+  <section class="about">
+    <h2>About TripBot</h2>
+    <p>
+      TripBot uses artificial intelligence to craft personalized travel plans
+      based on your interests, budget, and destination. Whether you crave
+      mountains, beaches, or cultural getaways — TripBot has you covered.
+    </p>
+  </section>
+
+  <footer>
+    <p>© 2025 TripBot – Your AI Travel Companion</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="script.js?v=3"></script>
+  <script>
+    // Auto–sliding hero images
+    let slideIndex = 0;
+    const showSlides = () => {
+      const slides = document.querySelectorAll(".slides");
+      slides.forEach((s) => (s.style.display = "none"));
+      slideIndex++;
+      if (slideIndex > slides.length) slideIndex = 1;
+      slides[slideIndex - 1].style.display = "block";
+      setTimeout(showSlides, 4000);
+    };
+    document.addEventListener("DOMContentLoaded", showSlides);
+  </script>
+</body>
+</html>

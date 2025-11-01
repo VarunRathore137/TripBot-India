@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JourneyJolt - Plan Your Trip</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="chat-page">
+  <header class="navbar">
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="logo" />
+      <h2>Journey<span>Jolt</span></h2>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="plan.html" class="active">Plan Trip</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="chat-container">
+    <div class="chat-header">
+      <h1>Plan Your Dream Journey 🌏</h1>
+      <p>Ask JourneyJolt anything about your destination or itinerary.</p>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+      <div class="message bot">👋 Hi there! Tell me where you’d like to travel.</div>
+    </div>
+
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button id="sendBtn" class="primary-btn">Send</button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
