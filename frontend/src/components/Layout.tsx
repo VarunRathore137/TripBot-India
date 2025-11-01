@@ -1,12 +1,17 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import Navbar from './Navbar'
+import React from 'react';
+import Navbar from './Navbar';
 
-const Layout = () => {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
-      <Outlet />
+      <main className="flex-1 container mx-auto px-4 py-8">
+        {children}
+      </main>
     </div>
   );
 };

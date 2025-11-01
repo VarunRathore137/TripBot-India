@@ -1,10 +1,14 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { LogInContext } from '@/Context/LogInContext/Login';
 
 const Hero = () => {
-  const { isAuthenticated } = useContext(LogInContext);
+  const { isAuthenticated, checkLocalAuth } = useContext(LogInContext);
+
+  useEffect(() => {
+    checkLocalAuth();
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] text-center">

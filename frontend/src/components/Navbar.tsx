@@ -19,11 +19,14 @@ const Navbar = () => {
             <Link to="/" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
               Home
             </Link>
-            <Link to="/about" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-              About
+            <Link to="/plan-a-trip" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+              Plan a Trip
             </Link>
-            <Link to="/contact" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-              Contact
+            <Link to="/my-trips" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+              My Trips
+            </Link>
+            <Link to="/login" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+              Login
             </Link>
           </div>
 
@@ -53,11 +56,14 @@ const Navbar = () => {
             <Link to="/" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">
               Home
             </Link>
-            <Link to="/about" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">
-              About
+            <Link to="/plan-a-trip" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">
+              Plan a Trip
             </Link>
-            <Link to="/contact" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">
-              Contact
+            <Link to="/my-trips" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">
+              My Trips
+            </Link>
+            <Link to="/login" className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium">
+              Login
             </Link>
           </div>
         </div>

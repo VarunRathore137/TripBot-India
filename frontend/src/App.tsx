@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import Layout from '@/components/custom/Layout';
+import Layout from '@/components/Layout';
 import Hero from '@/components/custom/Hero';
 import CreateTrip from '@/components/routes/plan-a-trip/CreateTrip';
 import MyTrips from '@/components/routes/my-trips/MyTrips';

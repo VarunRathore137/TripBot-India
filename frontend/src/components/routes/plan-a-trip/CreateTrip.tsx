@@ -18,12 +18,16 @@ import {
   DialogClose,
   DialogFooter,
 } from '@/components/ui/dialog';
-import {
-  PROMPT,
-  SelectBudgetOptions,
-  SelectNoOfPersons,
-} from '../../constants/Options';
+import { budgetRanges as SelectBudgetOptions, PROMPT } from '@/components/constants/Options';
 import Autocomplete from 'react-google-autocomplete';
+
+const SelectNoOfPersons = [
+  { value: 'Solo', label: 'Solo Traveler' },
+  { value: 'Couple', label: 'Couple' },
+  { value: 'Family', label: 'Family' },
+  { value: 'Friends', label: 'Group of Friends' },
+  { value: 'Business', label: 'Business Group' }
+];
 
 interface FormData {
   location?: string;
@@ -46,7 +50,12 @@ const CreateTrip = () => {
   const { user, loginWithPopup, isAuthenticated } = useContext(LogInContext);
 
   const handleInputChange = (name: string, value: string | number) => {
-    setFormData((prevState) => ({ ...prevState, [name]: value }));
+    console.log(`Setting ${name} to:`, value);
+    setFormData((prevState) => {
+      const newState = { ...prevState, [name]: value };
+      console.log('New form data:', newState);
+      return newState;
+    });
   };
 
   const SignIn = async () => {
@@ -88,31 +97,64 @@ const CreateTrip = () => {
     navigate('/my-trips/' + id);
   };
 
+  const validateForm = () => {
+    const missingFields = [];
+    
+    if (!formData?.location) missingFields.push('Location');
+    if (!formData?.noOfDays) missingFields.push('Number of Days');
+    if (!formData?.People) missingFields.push('Travel Group');
+    if (!formData?.Budget) missingFields.push('Budget');
+
+    if (missingFields.length > 0) {
+      toast.dismiss(); // Dismiss any existing toasts
+      toast.error(`Please fill out: ${missingFields.join(', ')}`, {
+        id: 'form-validation', // Use a unique ID to prevent duplicates
+        duration: 3000,
+      });
+      return false;
+    }
+
+    if (formData.noOfDays > 5) {
+      toast.dismiss();
+      toast.error('Please enter Trip Days less than 5', {
+        id: 'days-validation',
+        duration: 3000,
+      });
+      return false;
+    }
+    if (formData.noOfDays < 1) {
+      toast.dismiss();
+      toast.error('Invalid number of Days', {
+        id: 'days-validation',
+        duration: 3000,
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const generateTrip = async () => {
     if (!isAuthenticated) {
+      toast.dismiss();
       toast('Sign In to continue', {
         icon: '⚠️',
+        id: 'auth-validation',
       });
       return setIsDialogOpen(true);
     }
-    if (
-      !formData?.noOfDays ||
-      !formData?.location ||
-      !formData?.People ||
-      !formData?.Budget
-    ) {
-      return toast.error('Please fill out every field or select every option.');
+
+    // Log form data for debugging
+    console.log('Form Data:', formData);
+
+    if (!validateForm()) {
+      return;
     }
-    if (formData?.noOfDays > 5) {
-      return toast.error('Please enter Trip Days less then 5');
-    }
-    if (formData?.noOfDays < 1) {
-      return toast.error('Invalid number of Days');
-    }
-    const FINAL_PROMPT = PROMPT.replace(/{location}/g, formData?.location)
-      .replace(/{noOfDays}/g, formData?.noOfDays.toString())
-      .replace(/{People}/g, formData?.People)
-      .replace(/{Budget}/g, formData?.Budget);
+
+    const FINAL_PROMPT = PROMPT.replace(/{location}/g, formData.location!)
+      .replace(/{noOfDays}/g, formData.noOfDays!.toString())
+      .replace(/{People}/g, formData.People!)
+      .replace(/{Budget}/g, formData.Budget!);
 
     try {
       const toastId = toast.loading('Generating Trip', {
