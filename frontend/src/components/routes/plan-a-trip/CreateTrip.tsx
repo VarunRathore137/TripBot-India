@@ -81,7 +81,7 @@ const CreateTrip = () => {
       console.log('New form data:', newState);
       return newState;
     });
-  };
+  };   
 
   // Version management is now handled in TripSummary component
 

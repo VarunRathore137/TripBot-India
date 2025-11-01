@@ -1,0 +1,16 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "outputDirectory": "dist",
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/" }
+  ],
+  "env": {
+    "VITE_API_URL": "WILL_BE_SET_IN_VERCEL_DASHBOARD",
+    "VITE_ML_API_URL": "WILL_BE_SET_IN_VERCEL_DASHBOARD"
+  }
+}
