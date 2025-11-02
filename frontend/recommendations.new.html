@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Recommendations – TripBot</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
     :root {
       --background: #000000;
       --text-primary: #ffffff;
@@ -13,12 +14,18 @@
       --accent: #00FFD1;
     }
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       background-color: var(--background);
       color: var(--text-primary);
       font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
+      line-height: 1.5;
+      min-height: 100vh;
     }
 
     header {
@@ -139,6 +146,7 @@
       padding: 2rem;
       color: var(--text-secondary);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 3rem;
     }
 
     @media (max-width: 768px) {
@@ -170,69 +178,53 @@
     </nav>
   </header>
 
-  <section class="recommendations-section">
-    <h2>🌍 Top Travel Recommendations Across India</h2>
-    <p class="subtitle">Discover breathtaking destinations handpicked by TripBot’s AI.</p>
-
-    <div class="recommendations-grid">
-      <!-- CARD 1 -->
-      <div class="rec-card">
-        <img src="https://images.unsplash.com/photo-1589367920466-10cbf4d2b6b2?auto=format&fit=crop&w=800&q=80" alt="Goa Beaches" />
-        <div class="rec-content">
-          <h3>Goa – Sun, Sand & Serenity</h3>
-          <p>Experience the perfect blend of beaches, nightlife, and culture in India’s coastal paradise.</p>
-        </div>
+  <main>
+    <h2 class="recommendations-title">
+      <span>Top Travel Recommendations Across India</span>
+    </h2>
+    <p class="recommendations-subtitle">Discover breathtaking destinations handpicked by TripBot's AI.</p>
+    
+    <div class="destination-grid">
+      <div class="destination-card">
+        <img src="https://source.unsplash.com/1600x900/?goa-beaches" alt="Goa Beaches" class="destination-image" />
+        <h3>Goa – Sun, Sand & Serenity</h3>
+        <p>Experience the perfect blend of beaches, nightlife, and culture in India's coastal paradise.</p>
       </div>
-
-      <!-- CARD 2 -->
-      <div class="rec-card">
-        <img src="https://images.unsplash.com/photo-1505765050516-f72dcac9c60b?auto=format&fit=crop&w=800&q=80" alt="Manali Mountains" />
-        <div class="rec-content">
-          <h3>Manali – Gateway to the Himalayas</h3>
-          <p>Perfect for adventure lovers. Snow, trekking, and scenic valleys await your visit.</p>
-        </div>
+      
+      <div class="destination-card">
+        <img src="https://source.unsplash.com/1600x900/?manali-mountains" alt="Manali Mountains" class="destination-image" />
+        <h3>Manali – Gateway to the Himalayas</h3>
+        <p>Perfect for adventure lovers. Snow, trekking, and scenic valleys await your visit.</p>
       </div>
-
-      <!-- CARD 3 -->
-      <div class="rec-card">
-        <img src="https://images.unsplash.com/photo-1603264046441-58f3d79c3f0b?auto=format&fit=crop&w=800&q=80" alt="Jaipur Rajasthan" />
-        <div class="rec-content">
-          <h3>Jaipur – The Pink City</h3>
-          <p>Rich in heritage and architecture, Jaipur offers royal palaces and colorful bazaars.</p>
-        </div>
+      
+      <div class="destination-card">
+        <img src="https://source.unsplash.com/1600x900/?jaipur-palace" alt="Jaipur Rajasthan" class="destination-image" />
+        <h3>Jaipur – The Pink City</h3>
+        <p>Rich in heritage and architecture, Jaipur offers royal palaces and colorful bazaars.</p>
       </div>
-
-      <!-- CARD 4 -->
-      <div class="rec-card">
-        <img src="https://images.unsplash.com/photo-1604847542321-9f1d8a3d6dcb?auto=format&fit=crop&w=800&q=80" alt="Kerala Backwaters" />
-        <div class="rec-content">
-          <h3>Kerala – God's Own Country</h3>
-          <p>Drift through backwaters, explore lush greenery, and experience true tranquility.</p>
-        </div>
+      
+      <div class="destination-card">
+        <img src="https://source.unsplash.com/1600x900/?kerala-backwaters" alt="Kerala Backwaters" class="destination-image" />
+        <h3>Kerala – God's Own Country</h3>
+        <p>Drift through backwaters, explore lush greenery, and experience true tranquility.</p>
       </div>
-
-      <!-- CARD 5 -->
-      <div class="rec-card">
-        <img src="https://images.unsplash.com/photo-1526481280692-9063dc04b77e?auto=format&fit=crop&w=800&q=80" alt="Varanasi Ghats" />
-        <div class="rec-content">
-          <h3>Varanasi – The Spiritual Capital</h3>
-          <p>Witness the Ganga Aarti, explore narrow alleys, and immerse yourself in spirituality.</p>
-        </div>
+      
+      <div class="destination-card">
+        <img src="https://source.unsplash.com/1600x900/?varanasi-ghats" alt="Varanasi Ghats" class="destination-image" />
+        <h3>Varanasi – The Spiritual Capital</h3>
+        <p>Witness the Ganga Aarti, explore narrow alleys, and immerse yourself in spirituality.</p>
       </div>
-
-      <!-- CARD 6 -->
-      <div class="rec-card">
-        <img src="https://images.unsplash.com/photo-1603532741954-35c36f9b35d2?auto=format&fit=crop&w=800&q=80" alt="Andaman Islands" />
-        <div class="rec-content">
-          <h3>Andaman Islands – Ocean Bliss</h3>
-          <p>Dive into turquoise waters, coral reefs, and a serene island escape like no other.</p>
-        </div>
+      
+      <div class="destination-card">
+        <img src="https://source.unsplash.com/1600x900/?andaman-islands" alt="Andaman Islands" class="destination-image" />
+        <h3>Andaman Islands – Ocean Bliss</h3>
+        <p>Dive into turquoise waters, coral reefs, and a serene island escape like no other.</p>
       </div>
     </div>
-  </section>
+  </main>
 
   <footer>
-    <p>© 2025 TripBot – Your AI Travel Companion</p>
+    <p>&copy; 2025 TripBot – Your AI Travel Companion</p>
   </footer>
 </body>
 </html>

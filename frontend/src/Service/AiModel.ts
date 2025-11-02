@@ -17,3 +17,46 @@ export const startChat = async () => {
     generationConfig,
   });
 };
+
+interface ItineraryFormData {
+  destination: string;
+  duration: string;
+  preferences?: string[];
+}
+
+export const generateItinerary = async (formData: ItineraryFormData) => {
+  try {
+    const chat = await startChat();
+    const prompt = `Create a detailed ${formData.duration}-day itinerary for ${formData.destination}.
+      ${formData.preferences?.length ? `Include activities related to: ${formData.preferences.join(', ')}` : ''}
+      Format the response as a JSON object with the following structure:
+      {
+        "destination": string,
+        "duration": number,
+        "days": [
+          {
+            "dayNumber": number,
+            "activities": [
+              {
+                "time": string,
+                "description": string,
+                "location": string
+              }
+            ]
+          }
+        ]
+      }`;
+
+    const result = await chat.sendMessage(prompt);
+    const response = result.response;
+    const text = response.text();
+    
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      throw new Error('Failed to parse itinerary data');
+    }
+  } catch (error) {
+    throw new Error('Failed to generate itinerary');
+  }
+};

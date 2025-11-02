@@ -1,13 +1,41 @@
-import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LogInContext } from '@/Context/LogInContext/Login';
-import { db } from '@/Service/Firebase';
-import { doc, setDoc } from 'firebase/firestore';
-import { FcGoogle } from 'react-icons/fc';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+
+interface FormData {
+  location?: string;
+  noOfDays?: number;
+  People?: string;
+  Budget?: string;
+}
+
+interface User {
+  uid: string;
+  nickname: string;
+}
+
+interface TripItinerary {
+  destination: string;
+  duration: number;
+  groupType: string;
+  budget: string;
+  overview: string;
+  dailyItinerary: Array<{
+    day: number;
+    activities: string[];
+    meals: {
+      breakfast?: string;
+      lunch?: string;
+      dinner?: string;
+    };
+    accommodation?: string;
+  }>;
+  travelTips: string[];
+  culturalNotes: string[];
+  totalEstimatedCost: number;
+}
 import toast from 'react-hot-toast';
 import {
   Dialog,
@@ -68,9 +96,110 @@ interface FormData {
 const CreateTrip = () => {
   const [formData, setFormData] = useState<FormData>({});
   const [generatedItinerary, setGeneratedItinerary] = useState<TripItinerary | null>(null);
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useContext(LogInContext);
+
+  const handleInputChange = (field: keyof FormData, value: string | number) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const generateTrip = async () => {
+    if (!formData.location || !formData.noOfDays || !formData.People || !formData.Budget) {
+      alert('Please fill all fields');
+      return;
+    }
+
+    if (formData.noOfDays > 14) {
+      alert('Maximum trip duration is 14 days');
+      return;
+    }
+
+    if (formData.noOfDays < 1) {
+      alert('Minimum trip duration is 1 day');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post('/api/itinerary/generate', {
+        destination: formData.location,
+        duration: formData.noOfDays,
+        groupType: formData.People,
+        budget: formData.Budget
+      });
+
+      const itinerary: TripItinerary = {
+        destination: formData.location,
+        duration: formData.noOfDays,
+        groupType: formData.People,
+        budget: formData.Budget,
+        overview: response.data.overview || "Your personalized trip itinerary",
+        dailyItinerary: response.data.dailyItinerary || [],
+        travelTips: response.data.travelTips || [],
+        culturalNotes: response.data.culturalNotes || [],
+        totalEstimatedCost: response.data.totalEstimatedCost || 0
+      };
+
+      setGeneratedItinerary(itinerary);
+      
+    } catch (error: any) {
+      console.error('Error generating itinerary:', error);
+      alert(error.response?.data?.message || 'Error generating itinerary');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Form section to collect user input
+  const renderForm = () => (
+    <div className="max-w-xl mx-auto p-4">
+      <div className="space-y-4">
+        <input
+          type="text"
+          placeholder="Destination (e.g., Jaipur)"
+          className="w-full p-2 border rounded"
+          onChange={(e) => handleInputChange('location', e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Number of Days"
+          className="w-full p-2 border rounded"
+          onChange={(e) => handleInputChange('noOfDays', parseInt(e.target.value))}
+        />
+        <select
+          className="w-full p-2 border rounded"
+          onChange={(e) => handleInputChange('People', e.target.value)}
+        >
+          <option value="">Select Group Type</option>
+          {SelectNoOfPersons.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <select
+          className="w-full p-2 border rounded"
+          onChange={(e) => handleInputChange('Budget', e.target.value)}
+        >
+          <option value="">Select Budget Range</option>
+          <option value="Budget">Budget-Friendly</option>
+          <option value="Moderate">Moderate</option>
+          <option value="Luxury">Luxury</option>
+        </select>
+        <button
+          onClick={generateTrip}
+          disabled={isLoading}
+          className="w-full bg-primary text-white p-3 rounded disabled:opacity-50"
+        >
+          {isLoading ? 'Generating...' : 'Generate Itinerary'}
+        </button>
+      </div>
+    </div>
+  );
   
   const navigate = useNavigate();
   const { user, loginWithPopup, isAuthenticated } = useContext(LogInContext);
@@ -176,28 +305,58 @@ const CreateTrip = () => {
       return;
     }
 
-    const FINAL_PROMPT = PROMPT.replace(/{location}/g, formData.location!)
-      .replace(/{noOfDays}/g, formData.noOfDays!.toString())
-      .replace(/{People}/g, formData.People!)
-      .replace(/{Budget}/g, formData.Budget!);
-
     try {
       const toastId = toast.loading('Generating Trip', {
         icon: '✈️',
       });
       setIsLoading(true);
 
-      const response = await axios.post(API_ENDPOINTS.GENERATE_ITINERARY, {
-        location: formData.location,
-        noOfDays: formData.noOfDays,
-        groupType: formData.People,
-        budget: formData.Budget,
-        prompt: FINAL_PROMPT
-      });
+      // Direct OpenAI API call
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content: "You are a knowledgeable travel planner who creates detailed, engaging itineraries."
+            },
+            {
+              role: "user",
+              content: `Create a detailed ${formData.noOfDays}-day travel itinerary for ${formData.location}.
+                Travel Group: ${formData.People}
+                Budget: ${formData.Budget}
+                
+                Please provide a detailed day-by-day itinerary including:
+                - Specific times for each activity
+                - Local attractions and landmarks
+                - Recommended restaurants and food experiences
+                - Cultural activities and experiences
+                - Transportation suggestions
+                - Estimated costs for activities
+                - Local tips and recommendations
+                
+                Format each day with proper emojis and clear sections.`
+            }
+          ],
+          temperature: 0.7,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer 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`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
-      const trip: TripItinerary = {
+      const generatedContent = response.data.choices[0].message.content;
+      
+      // Set the generated itinerary
+      setGeneratedItinerary({
         destination: formData.location!,
         duration: formData.noOfDays!,
+        details: generatedContent
+      });
         travelers: formData.People!,
         budget: formData.Budget!,
         overview: response.data.overview || "Your personalized trip itinerary",

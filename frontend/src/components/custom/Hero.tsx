@@ -15,7 +15,7 @@ const Hero = () => {
       <div className="space-y-6 max-w-[750px] relative">
         <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl lg:text-7xl">
           Your{' '}
-          <span className="bg-gradient-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-orange-600 to-green-600 bg-clip-text text-transparent">
             AI-Powered
           </span>{' '}
           Travel Companion
@@ -26,10 +26,18 @@ const Hero = () => {
         </p>
         <div className="mx-auto max-w-[22rem] space-y-4">
           <Link to={isAuthenticated ? '/plan-a-trip' : '/login'}>
-            <Button className="w-full" size="lg">
-              Start Planning Your Trip
+            <Button 
+              className="w-full bg-gradient-to-r from-orange-600 to-green-600 text-white hover:from-orange-700 hover:to-green-700 transition-all shadow-lg" 
+              size="lg"
+            >
+              Start Planning Your Journey
             </Button>
           </Link>
+          {!isAuthenticated && (
+            <p className="text-sm text-muted-foreground">
+              Please sign in to start planning your trip
+            </p>
+          )}
         </div>
       </div>
     </div>

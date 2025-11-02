@@ -1,48 +1,87 @@
-import { DragEventHandler, useState } from 'react';
-import { Activity, DayItinerary, TripItinerary } from './types';
-import { format } from 'date-fns';
-import { Button } from '@/components/ui/button';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
-import {
-  MapPin,
-  Clock,
-  DollarSign,
-  Coffee,
-  Utensils,
-  Moon,
-  GripVertical
-} from 'lucide-react';
+import React from 'react';
+import { TripItinerary } from './types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface ActivityItemProps {
-  activity: Activity;
-  onDragStart: DragEventHandler<HTMLDivElement>;
-  onDragEnd: DragEventHandler<HTMLDivElement>;
-  onDragOver: DragEventHandler<HTMLDivElement>;
-  onDrop: DragEventHandler<HTMLDivElement>;
+interface ItineraryViewProps {
+  itinerary: TripItinerary;
 }
 
-const ActivityItem: React.FC<ActivityItemProps> = ({ 
-  activity, 
-  onDragStart, 
-  onDragEnd,
-  onDragOver,
-  onDrop 
-}) => {
-  const getIcon = () => {
-    switch (activity.type) {
-      case 'meal':
-        return <Utensils className="w-4 h-4" />;
-      case 'accommodation':
-        return <Moon className="w-4 h-4" />;
-      default:
-        return <MapPin className="w-4 h-4" />;
-    }
+const ItineraryView: React.FC<ItineraryViewProps> = ({ itinerary }) => {
+  const formatContent = (content: string) => {
+    if (!content) return [];
+    
+    // Split content into days
+    const days = content.split(/Day \d+:/g).filter(Boolean);
+    return days.map((day, index) => ({
+      dayNumber: index + 1,
+      content: day.trim()
+    }));
+  };
+
+  const formattedDays = formatContent(itinerary.details);
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">
+            {itinerary.duration}-Day Trip to {itinerary.destination}
+          </CardTitle>
+        </CardHeader>
+      </Card>
+
+      <div className="space-y-6">
+        {formattedDays.map((day) => (
+          <Card key={day.dayNumber} className="overflow-hidden">
+            <CardHeader className="bg-primary/5">
+              <CardTitle className="text-xl">
+                Day {day.dayNumber}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="mt-4">
+              <div className="whitespace-pre-wrap text-gray-700">
+                {day.content.split('\n').map((line, idx) => (
+                  <p key={idx} className="mb-2">
+                    {line.trim()}
+                  </p>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ItineraryView;
+
+interface ItineraryViewProps {
+  itinerary: TripItinerary;
+}
+
+const ItineraryView: React.FC<ItineraryViewProps> = ({ itinerary }) => {
+  const formatItinerary = (content: string) => {
+    // Split the content into days
+    const days = content.split(/Day \d+:/g).filter(Boolean);
+    
+    return days.map((day, index) => {
+      const activities = day
+        .split('\n')
+        .filter(line => line.trim())
+        .map(activity => {
+          const timeMatch = activity.match(/(\d{1,2}:\d{2}(?:\s*[AaPp][Mm])?)/);
+          return {
+            time: timeMatch ? timeMatch[1] : '',
+            description: activity.trim()
+          };
+        });
+
+      return {
+        dayNumber: index + 1,
+        activities
+      };
+    });
   };
 
   return (

@@ -30,6 +30,9 @@ export interface DayItinerary {
 export interface TripItinerary {
   destination: string;
   duration: number;
+  details: string;  // AI-generated itinerary text
+  destination: string;
+  duration: number;
   budget: string;
   travelers: string;
   overview: string;
